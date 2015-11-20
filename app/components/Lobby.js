@@ -23,7 +23,10 @@ class Lobby extends React.Component<{}, Props, {}> {
 
     componentDidMount() {
         // Move this code out!
-        var name = prompt('What is your username?');
+        var name =
+            // prompt('What is your username?');
+            'Rupert';
+
         dispatch({
             type: 'lobby/join',
             name: name

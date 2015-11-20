@@ -21,11 +21,13 @@ class ClickMe extends React.Component<{}, {}, State> {
     }
 
     static calculateState(prevState): State {
-        var lobbyState = LobbyStore.getState();
+        var lobbyState = LobbyStore.getState(),
+            queueState = QueueStore.getState(),
+            playerState = PlayerStore.getState();
         return {
             playersNumL: lobbyState.get(playerNumL),
-            playersNumQ: QueueStore.get(playerNumQ),
-            playerID: PlayerStore.get(playerID)
+            playersNumQ: queueState.get(playerNumQ),
+            playerID: playerState.get(playerID)
         };
     }
 
