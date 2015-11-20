@@ -1,28 +1,38 @@
 import React from 'react';
 import {Container} from 'flux/utils';
-import DataStore from './data/DataStore';
+import LobbyStore from './data/LobbyStore';
+import QueueStore from './data/QueueStore';
+import PlayerStore from './data/PlayerStore';
 import Table from './components/Table';
-import './data/data';
+import Lobby from './components/Lobby';
+import {playerNumL} from './data/LobbyStoreKeys';
+import {playerNumQ} from './data/QueueStoreKeys';
+import {playerID} from './data/PlayerStoreKeys';
+import type Player from './data/Player';
 
 type State = {
-    data: Immutable.List<Immutable.Map>
+    playersNumL: number,
+    playerID: Player
 };
 
-class Fire extends React.Component<{}, {}, State> {
+class ClickMe extends React.Component<{}, {}, State> {
     static getStores(): Array<Store> {
-        return [DataStore];
+        return [LobbyStore, QueueStore, PlayerStore];
     }
 
     static calculateState(prevState): State {
+        var lobbyState = LobbyStore.getState();
         return {
-            data: DataStore.getState()
+            playersNumL: lobbyState.get(playerNumL),
+            playersNumQ: QueueStore.get(playerNumQ),
+            playerID: PlayerStore.get(playerID)
         };
     }
 
     render() {
-        return <Table data={this.state.data}/>;
+        return <Lobby players={this.state.playersNumL} playerID={this.state.playerID}/>;
     }
 }
 
-const fire = Container.create(Fire);
-export default fire;
+const clickme = Container.create(ClickMe);
+export default clickme;

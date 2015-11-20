@@ -1,0 +1,1 @@
+export const queue = new Firebase('https://volleyup.firebaseio.com/clickmefast/queue');
