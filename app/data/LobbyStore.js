@@ -13,7 +13,7 @@ lobby.on('value', function(data) {
     var playersLobby = data.val();
     dispatch({
         type: 'lobby/players-number-update',
-        number: Object.keys(playersLobby).length
+        number: playersLobby !== null ? Object.keys(playersLobby).length : 0
     });
 });
 

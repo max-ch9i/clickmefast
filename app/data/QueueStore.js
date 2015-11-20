@@ -14,7 +14,7 @@ queue.on('value', function(data) {
     var inQueue = data.val();
     dispatch({
         type: 'queue/players-number-update',
-        number: Object.keys(inQueue).length
+        number: inQueue !== null ? Object.keys(inQueue).length : 0
     });
 });
 
