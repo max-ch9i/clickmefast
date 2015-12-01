@@ -13,8 +13,23 @@ export default class Player {
     getUID() {
         return this.uid;
     }
+    queue() {
+        this.state = 'queue';
+        return this;
+    }
+    play() {
+        this.state = 'play';
+        return this;
+    }
+    isQueuing() {
+        return this.state === 'queue';
+    }
+    getState() {
+        return this.state;
+    }
     toObj() {
         return {
+            uid: this.uid,
             name: this.name,
             state: this.state
         };
