@@ -1,41 +1,63 @@
 import AppDispatcher, {dispatch} from './AppDispatcher.js';
+import Player from './Player.js';
 import {MapStore} from 'flux/utils';
 import Firebase from 'firebase';
 import Immutable from 'immutable';
-
-type State = {
-    players: Array;
-    state: string;
-};
-
-var keyPlayers = Symbol();
+import * as Keys from './keys';
 
 const playersConnection = new Firebase('https://volleyup.firebaseio.com/clickmefast/players');
 var _playerKey = null;
 
-playersConnection.on('value', function(data) {
-    var players = data.val();
+var generateUID = function() {
+    // 0.4129429495536414 -> x4129429495
+    var rand = Math.random().toString(10).substr(2, 10);
+    return 'x' + new Date().getTime() + rand;
+}
+
+playersConnection.on('child_added', function(data) {
+    var payload = data.val();
     dispatch({
-        type: 'update/all',
-        players
+        type: 'update/child_added',
+        payload
+    });
+});
+
+playersConnection.on('child_removed', function(data) {
+    var payload = data.val();
+    dispatch({
+        type: 'update/child_removed',
+        payload
     });
 });
 
 class PlayersStore extends MapStore {
-    reduce(state: State, action) {
+    getInitialState() {
+        return new Immutable.Map([
+            [Keys.keyPlayers, new Immutable.List()],
+            [Keys.keyCurrentPlayer, null]
+        ]);
+    }
+    reduce(state, action) {
         switch(action.type) {
-            case 'update/all':
-                // transform to a map
-                let _players = new Immutable.OrderedMap(action.players);
-                return state.set(keyPlayers, _players);
-                break;
+            case 'update/child_removed':
+                var _updated = state.get(Keys.keyPlayers).filterNot(function(v) {
+                    return v.getUID() === action.payload.uid;
+                });
+                return state.set(Keys.keyPlayers, _updated);
+            case 'update/child_added':
+                var _player = new Player(action.payload);
+                var child_list = state.get(Keys.keyPlayers).push(_player);
+                return state.set(Keys.keyPlayers, child_list);
             case 'lobby/join':
-                var _player = {name: action.name};
-                var newPlayer = playersConnection.push(_player);
+                var _pl = {
+                    uid: generateUID(),
+                    name: action.payload,
+                    state: 'idle',
+                };
+                var newPlayer = playersConnection.push(_pl);
                 newPlayer.onDisconnect().remove();
                 // Dispatched via update/all
-                return state;
-                break;
+                return state.set(Keys.keyCurrentPlayer, new Player(_pl));
             default:
                 return state;
         }

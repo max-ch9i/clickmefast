@@ -10,19 +10,15 @@ class Lobby extends React.Component<{}, Props, {}> {
         e.preventDefault();
         // dispatch({
         //     type: 'queue/join',
-        //     player: this.props.playerID
+        //     player: this.props.player
         // });
-    }
-
-    componentDidMount() {
-        // Move this code out!
         var name =
             // prompt('What is your username?');
             'Rupert';
 
         dispatch({
             type: 'lobby/join',
-            name: name
+            payload: name
         });
     }
 
@@ -30,15 +26,15 @@ class Lobby extends React.Component<{}, Props, {}> {
         return (
             <div>
                 <div>There are {this.props.players} player</div>
-                {this.props.playerID ? <div>Your name is {this.props.playerID.name}</div> : null}
-                <div><a href onClick={this._join.bind(this)}>Join</a></div>
+                {this.props.player ? <div>Your name is {this.props.player.getName()}</div> : null}
+                {this.props.player ? null : <div><a href onClick={this._join.bind(this)}>Join</a></div>}
             </div>
         );
     }
 }
 Lobby.defaultProps = {
     players: 0,
-    playerID: null
+    player: null
 };
 
 export default Lobby;
