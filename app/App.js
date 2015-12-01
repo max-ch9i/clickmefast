@@ -1,38 +1,20 @@
 import React from 'react';
 import {Container} from 'flux/utils';
-import LobbyStore from './data/LobbyStore';
-import QueueStore from './data/QueueStore';
-import PlayerStore from './data/PlayerStore';
-import Table from './components/Table';
 import Lobby from './components/Lobby';
-import {playerNumL} from './data/LobbyStoreKeys';
-import {playerNumQ} from './data/QueueStoreKeys';
-import {playerID} from './data/PlayerStoreKeys';
-import type Player from './data/Player';
+import PlayersStore from './data/PlayersStore';
 
-type State = {
-    playersNumL: number,
-    playerID: Player
-};
-
-class ClickMe extends React.Component<{}, {}, State> {
-    static getStores(): Array<Store> {
-        return [LobbyStore, QueueStore, PlayerStore];
+class ClickMe extends React.Component {
+    static getStores() {
+        return [PlayersStore];
     }
 
     static calculateState(prevState): State {
-        var lobbyState = LobbyStore.getState(),
-            queueState = QueueStore.getState(),
-            playerState = PlayerStore.getState();
         return {
-            playersNumL: lobbyState.get(playerNumL),
-            playersNumQ: queueState.get(playerNumQ),
-            playerID: playerState.get(playerID)
         };
     }
 
     render() {
-        return <Lobby players={this.state.playersNumL} playerID={this.state.playerID}/>;
+        return <Lobby players={1} playerID={null}/>;
     }
 }
 

@@ -1,12 +1,5 @@
 import React from 'react';
 import {dispatch} from '../data/AppDispatcher';
-import {lobby, queue} from '../data/dataRef';
-import Player from '../data/Player';
-
-type Props = {
-    players: number,
-    playerID: Player
-};
 
 class Lobby extends React.Component<{}, Props, {}> {
     constructor(props) {
@@ -15,10 +8,10 @@ class Lobby extends React.Component<{}, Props, {}> {
 
     _join(e) {
         e.preventDefault();
-        dispatch({
-            type: 'queue/join',
-            player: this.props.playerID
-        });
+        // dispatch({
+        //     type: 'queue/join',
+        //     player: this.props.playerID
+        // });
     }
 
     componentDidMount() {
