@@ -25,6 +25,13 @@ class Lobby extends React.Component<{}, Props, {}> {
         });
     }
 
+    _hit(index, e) {
+        e.preventDefault();
+        dispatch({
+            type: 'do/hit',
+            payload: index
+        });
+    }
 
     render() {
         switch (this.props.stage) {
@@ -35,12 +42,27 @@ class Lobby extends React.Component<{}, Props, {}> {
             case 'queue':
                 return <div>Queuing</div>;
             case 'game':
-                return <div>In game!</div>;
+                return (<div>
+                    <div>
+                        <h1>My</h1>
+                        <ul className="board my">{this.props.myBoard.map(function(v, i) {
+                            return <li key={i} onClick={this._hit.bind(this, i)} className={'v'+v}></li>;
+                        }.bind(this))}</ul>
+                    </div>
+                    <div>
+                        <h1>Op</h1>
+                        <ul className="board op">{this.props.opBoard.map(function(v, i) {
+                            return <li key={i} className={'v'+v}></li>;
+                        })}</ul>
+                    </div>
+                </div>);
         }
     }
 }
 Lobby.defaultProps = {
-    stage: 'init'
+    stage: 'init',
+    myBoard: [],
+    opBoard: []
 };
 
 export default Lobby;

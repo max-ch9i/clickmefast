@@ -2,7 +2,6 @@ import React from 'react';
 import {Container} from 'flux/utils';
 import Lobby from './components/Lobby';
 import PlayersStore from './data/PlayersStore';
-import * as Keys from './data/keys';
 
 class ClickMe extends React.Component {
     static getStores() {
@@ -10,13 +9,16 @@ class ClickMe extends React.Component {
     }
 
     static calculateState(prevState) {
+        var _state = PlayersStore.getState();
         return {
-            stage: PlayersStore.getState().get('stage')
+            stage: _state.get('stage'),
+            myBoard: _state.get('myBoard'),
+            opBoard: _state.get('opBoard')
         };
     }
 
     render() {
-        return <Lobby stage={this.state.stage}/>;
+        return <Lobby stage={this.state.stage} myBoard={this.state.myBoard} opBoard={this.state.opBoard}/>;
     }
 }
 
