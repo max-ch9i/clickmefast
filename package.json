@@ -1,6 +1,6 @@
 {
   "name": "boilerplate-flux",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "scripts": {
     "build": "watchify -t [ babelify --presets [ es2015 react stage-0 ] ] app/main.js -o dist/build.js --fast",
