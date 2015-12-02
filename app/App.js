@@ -11,13 +11,12 @@ class ClickMe extends React.Component {
 
     static calculateState(prevState) {
         return {
-            players: PlayersStore.getState().get(Keys.keyPlayers).size,
-            currentPlayer: PlayersStore.getState().get(Keys.keyCurrentPlayer)
+            stage: PlayersStore.getState().get('stage')
         };
     }
 
     render() {
-        return <Lobby players={this.state.players} player={this.state.currentPlayer}/>;
+        return <Lobby stage={this.state.stage}/>;
     }
 }
 
