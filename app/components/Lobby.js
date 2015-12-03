@@ -41,6 +41,11 @@ class Lobby extends React.Component<{}, Props, {}> {
                 return <div><a href onClick={this._queue.bind(this)}>Queue</a></div>;
             case 'queue':
                 return <div>Queuing</div>;
+            case 'victory':
+                return <div>You won!</div>;
+            case 'defeat':
+                return <div>You lost!</div>;
+
             case 'game':
                 return (<div>
                     <div>

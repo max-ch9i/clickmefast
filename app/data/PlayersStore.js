@@ -15,12 +15,15 @@ class PlayersStore extends MapStore {
     reduce(state, action) {
         AppDispatcher.waitFor([FireConnectorStore.getDispatchToken()]);
         switch(action.type) {
+            case 'current/win':
+                return state.set('stage', 'victory');
+            case 'opponent/win':
+                return state.set('stage', 'defeat');
+            
             case 'current/board':
-                var board = JSON.parse(action.payload);
-                return state.set('myBoard', board);
+                return state.set('myBoard', action.payload);
             case 'opponent/board':
-                var board = JSON.parse(action.payload);
-                return state.set('opBoard', board);
+                return state.set('opBoard', action.payload);
             case 'current/game':
                 return state.set('stage', 'game');
 
