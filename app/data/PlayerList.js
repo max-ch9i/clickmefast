@@ -1,6 +1,6 @@
 import Firebase from 'firebase';
 
-export default PlayerList {
+export default class PlayerList {
     constructor(refUrl) {
         this.refPlayers = new Firebase('https://volleyup.firebaseio.com/clickmefast/players');
         this.refPlayers.on('value', function(data) {
@@ -10,6 +10,7 @@ export default PlayerList {
     addPlayer(player, onComplete) {
         var _refPlayer = this.refPlayers.push(player.getJSEntity(), onComplete);
         player.setRef(_refPlayer);
+        _refPlayer.onDisconnect().remove();
     }
     getFirstQueuingPlayer() {
         var firstPlayerQueue = null;
@@ -21,6 +22,9 @@ export default PlayerList {
             }
         });
 
-        return firstPlayerQueue;
+        return firstPlayerQueue ? firstPlayerQueue.ref() : null;
+    }
+    findOpponent(key) {
+        return this.snapshot.child(key).ref();
     }
 }

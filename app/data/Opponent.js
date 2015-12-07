@@ -1,7 +1,8 @@
 import CurrentPlayer from './CurrentPlayer';
 
-export default Opponent extends CurrentPlayer {
+export default class Opponent extends CurrentPlayer {
     constructor(ref) {
+        super();
         this.setRef(ref);
     }
 }

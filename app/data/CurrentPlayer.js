@@ -1,11 +1,13 @@
 import Board from './Board';
 
-export default CurrentPlayer {
+export default class CurrentPlayer {
     constructor(name) {
-        this.name = name;
-        this.state = 'lobby';
-        this.board = Board.initBoard();
-        this.opponent = '';
+        if (name) {
+            this.name = name;
+            this.state = 'lobby';
+            this.board = Board.initBoard();
+            this.opponent = '';
+        }
     }
     setRef(ref) {
         this.ref = ref;
@@ -22,7 +24,7 @@ export default CurrentPlayer {
         };
     }
     standInQueue(onComplete, onFound) {
-        if (!ref) {
+        if (!this.ref) {
             throw 'Ref hasn\'t been yet assigned for this player';
         }
         this.ref.child('state').set('queue', function() {
@@ -44,16 +46,16 @@ export default CurrentPlayer {
         }.bind(this);
         return _wait;
     }
-    initForGame(refOp) {
+    initForGame(opp) {
         this.ref.transaction(function(data) {
             return Object.assign(data, {
                 state: 'game',
                 board: Board.initBoard(),
-                opponent: refOp ? refOp.key() : ''
+                opponent: opp ? opp.getRef().key() : ''
             });
         });
     }
-    updateBoard(data) {
+    updateBoard(data, index) {
         var board = Board.parse(data);
         Board.destroyItem(board, index);
         this.ref.child('board').set(Board.forFB(board));

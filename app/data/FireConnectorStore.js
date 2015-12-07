@@ -3,22 +3,17 @@ import {MapStore} from 'flux/utils';
 import Firebase from 'firebase';
 import Immutable from 'immutable';
 import Board from './Board';
+import PlayerList from './PlayerList';
+import CurrentPlayer from './CurrentPlayer';
+import Opponent from './Opponent';
+import Game from './Game';
 
-const _refPlayers = new Firebase('https://volleyup.firebaseio.com/clickmefast/players');
+var _players = new PlayerList('https://volleyup.firebaseio.com/clickmefast/players');
 
-var _refCurrentPlayer = null;
-var _refOpponent = null;
+var _currentPlayer = null;
+var _opponent = null;
 
-var _boardSnapshots = {
-    _snapshotBoardMy: null,
-    _snapshotBoardOp: null
-};
-
-var _snapshotAll = null;
-
-_refPlayers.on('value', function(data) {
-    _snapshotAll = data;
-});
+var _game = null;
 
 class FireConnectorStore extends MapStore {
     getInitialState() {
@@ -26,117 +21,52 @@ class FireConnectorStore extends MapStore {
             ['state', 'workingAlways']
         ]);
     }
-    reduce(state, action) {
-        switch(action.type) {
-            case 'queue/join':
-                startQueuing();
-                return state;
-            case 'lobby/join':
-                addCurrentPlayer(action.payload);
-                return state;
-            case 'do/hit':
-                hit(action.payload);
-                return state;
-            default:
-                return state;
-        }
-    }
-}
-
-function hit(index) {
-    var board = Board.parse(_boardSnapshots['_snapshotBoardMy'].val());
-    Board.destroyItem(board, index);
-    _refCurrentPlayer.child('board').set(Board.forFB(board));
-}
-
-function addCurrentPlayer(name) {
-    _refCurrentPlayer = _refPlayers.push({
-        name,
-        state: 'lobby',
-        board: Board.initBoard(),
-        opponent: ''
-    }, function() {
-        dispatch({
-            type: 'current/joined',
-            payload: name
-        });
-    });
-    _refCurrentPlayer.onDisconnect().remove();
-}
-
-function startQueuing() {
-    var firstPlayerQueue = null;
-    _snapshotAll.forEach(function(snapshot) {
-        var v = snapshot.val();
-        if (v.state === 'queue') {
-            firstPlayerQueue = snapshot;
-            return true;
-        }
-    });
-
-    if (firstPlayerQueue) {
-        // Draw the player into the game
-        _refOpponent = firstPlayerQueue.ref();
-        // Manage opponents data
-        initPlayerForGame(_refOpponent, _refCurrentPlayer);
-        // Manage own data
-        initPlayerForGame(_refCurrentPlayer);
-        initGame(_refCurrentPlayer, _refOpponent)
-    } else {
-        _refCurrentPlayer.child('state').set('queue', function() {
-            _refCurrentPlayer.on('value', waitForGame);
-            dispatch({
-                type: 'current/queue'
-            });
-        });
-    }
-}
-
-function initPlayerForGame(refPlayer, refOp) {
-    refPlayer.transaction(function(data) {
-        return Object.assign(data, {
-            state: 'game',
-            board: Board.initBoard(),
-            opponent: refOp ? refOp.key() : ''
-        });
-    });
-}
-
-function initGame(refPlayer, refOp) {
-    dispatch({
-        type: 'current/game'
-    });
-    var refBoardPlayer = refPlayer.child('board');
-    var refBoardOp = refOp.child('board');
-    refBoardPlayer.on('value', updateBoard('current', _boardSnapshots, '_snapshotBoardMy', refBoardPlayer));
-    refBoardOp.on('value', updateBoard('opponent', _boardSnapshots, '_snapshotBoardOp', refBoardOp));
-}
-
-function updateBoard(side, snapshotCache, cacheEntry, refBoard) {
-    return function(snapshot) {
-        snapshotCache[cacheEntry] = snapshot;
-        var data = Board.parse(snapshot.val());
-        if (Board.haveIWon(data)) {
-            refBoard.off();
-            dispatch({
-                type: side + '/win'
-            });
-        } else {
+    initGame(opp) {
+        _opponent = opp;
+        _game = new Game(_currentPlayer, _opponent, true);
+        _game.initGame(function() {
+            dispatch({type: 'current/game'});
+        }, function(side) {
+            dispatch({type: side + '/win'});
+        }, function(side, data) {
             dispatch({
                 type: side + '/board',
                 payload: data
             });
+        });
+    }
+    startQueuing() {
+        var _firstInQueue = _players.getFirstQueuingPlayer();
+        if (_firstInQueue) {
+            _opponent = new Opponent(_firstInQueue);
+            this.initGame(_opponent);
+        } else {
+            _currentPlayer.standInQueue(function() {
+                dispatch({type: 'current/queue'});
+            }, function(value) {
+                var _refOpponent = _players.findOpponent(value['opponent']);
+                _opponent = new Opponent(_refOpponent);
+                this.initGame(_opponent);
+            }.bind(this));
         }
     }
-}
-
-function waitForGame(snapshot) {
-    // listen if someone adds you to the game
-    var value = snapshot.val();
-    if (value['state'] === 'game') {
-        _refCurrentPlayer.off('value', waitForGame);
-        _refOpponent = _snapshotAll.child(value['opponent']).ref();
-        initGame(_refCurrentPlayer, _refOpponent);
+    reduce(state, action) {
+        switch(action.type) {
+            case 'queue/join':
+                this.startQueuing();
+                return state;
+            case 'lobby/join':
+                _currentPlayer = new CurrentPlayer(action.payload);
+                _players.addPlayer(_currentPlayer, function() {
+                    dispatch({type: 'current/joined'});
+                });
+                return state;
+            case 'do/hit':
+                _game.hit(action.payload);
+                return state;
+            default:
+                return state;
+        }
     }
 }
 
