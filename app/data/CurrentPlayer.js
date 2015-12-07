@@ -56,8 +56,7 @@ export default class CurrentPlayer {
         });
     }
     updateBoard(data, index) {
-        var board = Board.parse(data);
-        Board.destroyItem(board, index);
-        this.ref.child('board').set(Board.forFB(board));
+        var newBoard = Board.destroyItem(data, index);
+        this.ref.child('board').set(Board.forFB(newBoard));
     }
 }

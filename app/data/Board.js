@@ -1,12 +1,11 @@
 export default class Board {
-    constructor() {
-
-    }
     static initBoard() {
         return '[1, 1, 1, 1, 1]';
     }
     static destroyItem(data, index) {
-        return data[index] = 0;
+        var board = Board.parse(data);
+        board[index] = 0;
+        return board;
     }
     static parse(data) {
         return JSON.parse(data);
@@ -14,7 +13,11 @@ export default class Board {
     static forFB(data) {
         return JSON.stringify(data);
     }
+    static fromFB(data) {
+        return JSON.parse(data);
+    }
     static haveIWon(data) {
-        return data.indexOf(1) === -1;
+        var board = Board.parse(data);
+        return board.indexOf(1) === -1;
     }
 }

@@ -25,12 +25,12 @@ export default class Game {
     updateBoard(side, snapshotCache, cacheEntry, refBoard) {
         return function(snapshot) {
             snapshotCache[cacheEntry] = snapshot;
-            var data = Board.parse(snapshot.val());
+            var data = snapshot.val();
             if (Board.haveIWon(data)) {
                 refBoard.off();
                 this.onVictory(side);
             } else {
-                this.onBoardUpdate(side, data);
+                this.onBoardUpdate(side, Board.parse(data));
             }
         }.bind(this);
     }
