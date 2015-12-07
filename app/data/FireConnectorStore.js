@@ -16,9 +16,9 @@ var _opponent = null;
 var _game = null;
 
 class FireConnectorStore extends Store {
-    initGame(opp) {
+    initGame(opp, initPlayers) {
         _opponent = opp;
-        _game = new Game(_currentPlayer, _opponent, true);
+        _game = new Game(_currentPlayer, _opponent, initPlayers);
         _game.initGame(function() {
             dispatch({type: 'current/game'});
         }, function(side) {
@@ -34,14 +34,14 @@ class FireConnectorStore extends Store {
         var _firstInQueue = _players.getFirstQueuingPlayer();
         if (_firstInQueue) {
             _opponent = new Opponent(_firstInQueue);
-            this.initGame(_opponent);
+            this.initGame(_opponent, true);
         } else {
             _currentPlayer.standInQueue(function() {
                 dispatch({type: 'current/queue'});
             }, function(value) {
                 var _refOpponent = _players.findOpponent(value['opponent']);
                 _opponent = new Opponent(_refOpponent);
-                this.initGame(_opponent);
+                this.initGame(_opponent, false);
             }.bind(this));
         }
     }
