@@ -2,7 +2,7 @@ import Firebase from 'firebase';
 
 export default class PlayerList {
     constructor(refUrl) {
-        this.refPlayers = new Firebase('https://volleyup.firebaseio.com/clickmefast/players');
+        this.refPlayers = new Firebase(refUrl);
         this.refPlayers.on('value', function(data) {
             this.snapshot = data;
         }.bind(this));
