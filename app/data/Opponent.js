@@ -2,6 +2,6 @@ import CurrentPlayer from './CurrentPlayer';
 
 export default Opponent extends CurrentPlayer {
     constructor(ref) {
-        this.ref = ref;
+        this.setRef(ref);
     }
 }

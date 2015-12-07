@@ -8,6 +8,10 @@ export default Game {
         }
         this.player = player;
         this.opponent = opponent;
+        this._boardSnapshots = {
+            _snapshotBoardMy: null,
+            _snapshotBoardOp: null
+        };
     }
     initGame(onInit, onVictory, onBoardUpdate) {
         onInit.apply(this);
@@ -15,8 +19,8 @@ export default Game {
         this.onBoardUpdate = onBoardUpdate.bind(this);
         var refBoardPlayer = this.player.child('board');
         var refBoardOp = this.opponent.child('board');
-        refBoardPlayer.on('value', updateBoard('current', _boardSnapshots, '_snapshotBoardMy', refBoardPlayer));
-        refBoardOp.on('value', updateBoard('opponent', _boardSnapshots, '_snapshotBoardOp', refBoardOp));
+        refBoardPlayer.on('value', updateBoard('current', this._boardSnapshots, '_snapshotBoardMy', refBoardPlayer));
+        refBoardOp.on('value', updateBoard('opponent', this._boardSnapshots, '_snapshotBoardOp', refBoardOp));
     }
     updateBoard(side, snapshotCache, cacheEntry, refBoard) {
         return function(snapshot) {
@@ -29,5 +33,8 @@ export default Game {
                 this.onBoardUpdate(side);
             }
         }.bind(this);
+    }
+    hit(index) {
+        this.player.updateBoard(this._boardSnapshots['_snapshotBoardMy'].val());
     }
 }

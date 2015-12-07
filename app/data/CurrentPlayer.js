@@ -53,4 +53,9 @@ export default CurrentPlayer {
             });
         });
     }
+    updateBoard(data) {
+        var board = Board.parse(data);
+        Board.destroyItem(board, index);
+        this.ref.child('board').set(Board.forFB(board));
+    }
 }
