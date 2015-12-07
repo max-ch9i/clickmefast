@@ -54,7 +54,7 @@ function addCurrentPlayer(name) {
         name,
         state: 'lobby',
         board: Board.initBoard(),
-        oponent: ''
+        opponent: ''
     }, function() {
         dispatch({
             type: 'current/joined',
@@ -77,7 +77,7 @@ function startQueuing() {
     if (firstPlayerQueue) {
         // Draw the player into the game
         _refOpponent = firstPlayerQueue.ref();
-        // Manage oponents data
+        // Manage opponents data
         initPlayerForGame(_refOpponent, _refCurrentPlayer);
         // Manage own data
         initPlayerForGame(_refCurrentPlayer);
@@ -97,7 +97,7 @@ function initPlayerForGame(refPlayer, refOp) {
         return Object.assign(data, {
             state: 'game',
             board: Board.initBoard(),
-            oponent: refOp ? refOp.key() : ''
+            opponent: refOp ? refOp.key() : ''
         });
     });
 }
@@ -135,7 +135,7 @@ function waitForGame(snapshot) {
     var value = snapshot.val();
     if (value['state'] === 'game') {
         _refCurrentPlayer.off('value', waitForGame);
-        _refOpponent = _snapshotAll.child(value['oponent']).ref();
+        _refOpponent = _snapshotAll.child(value['opponent']).ref();
         initGame(_refCurrentPlayer, _refOpponent);
     }
 }
