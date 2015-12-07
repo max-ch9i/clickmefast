@@ -20,7 +20,7 @@ export default class CurrentPlayer {
             name: this.name,
             state: this.state,
             board: this.board,
-            oponent: this.opponent
+            opponent: this.opponent
         };
     }
     standInQueue(onComplete, onFound) {
