@@ -1,5 +1,5 @@
 import AppDispatcher, {dispatch} from './AppDispatcher.js';
-import {MapStore} from 'flux/utils';
+import {Store} from 'flux/utils';
 import Firebase from 'firebase';
 import Immutable from 'immutable';
 import Board from './Board';
@@ -15,12 +15,7 @@ var _opponent = null;
 
 var _game = null;
 
-class FireConnectorStore extends MapStore {
-    getInitialState() {
-        return new Immutable.Map([
-            ['state', 'workingAlways']
-        ]);
-    }
+class FireConnectorStore extends Store {
     initGame(opp) {
         _opponent = opp;
         _game = new Game(_currentPlayer, _opponent, true);
@@ -50,22 +45,22 @@ class FireConnectorStore extends MapStore {
             }.bind(this));
         }
     }
-    reduce(state, action) {
+    __onDispatch(action) {
         switch(action.type) {
             case 'queue/join':
                 this.startQueuing();
-                return state;
+                break;
             case 'lobby/join':
                 _currentPlayer = new CurrentPlayer(action.payload);
                 _players.addPlayer(_currentPlayer, function() {
                     dispatch({type: 'current/joined'});
                 });
-                return state;
+                break;
             case 'do/hit':
                 _game.hit(action.payload);
-                return state;
+                break;
             default:
-                return state;
+                break;
         }
     }
 }
