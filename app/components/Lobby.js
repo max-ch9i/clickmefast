@@ -1,4 +1,5 @@
 import React from 'react';
+import JoinControl from './JoinControl';
 import {dispatch} from '../data/AppDispatcher';
 
 class Lobby extends React.Component<{}, Props, {}> {
@@ -6,8 +7,7 @@ class Lobby extends React.Component<{}, Props, {}> {
         super(props);
     }
 
-    _join(e) {
-        e.preventDefault();
+    _join() {
         var name =
             // prompt('What is your username?');
             'Rupert';
@@ -36,7 +36,7 @@ class Lobby extends React.Component<{}, Props, {}> {
     render() {
         switch (this.props.stage) {
             case 'init':
-                return <div><a href onClick={this._join.bind(this)}>Join</a></div>;
+                 return <JoinControl click={this._join}/>;
             case 'idle':
                 return <div><a href onClick={this._queue.bind(this)}>Queue</a></div>;
             case 'queue':
