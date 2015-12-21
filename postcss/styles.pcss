@@ -24,36 +24,3 @@ h1, h2, h3 {
 	justify-content: center;
 	align-items: center;
 }
-
-.board {
-	list-style: none outside none;
-	position: relative;
-	width: 290px;
-	height: 50px;
-	padding: 0;
-}
-
-.board > li {
-	position: absolute;
-	height: 50px;
-	width: 50px;
-	background-color: blue;
-}
-.board > li.v0 {
-	opacity: 0;
-}
-.board.op > li {
-	background-color: red;
-}
-.board > li:nth-child(2) {
-	transform: translateX(60px);
-}
-.board > li:nth-child(3) {
-	transform: translateX(120px);
-}
-.board > li:nth-child(4) {
-	transform: translateX(180px);
-}
-.board > li:nth-child(5) {
-	transform: translateX(240px);
-}
