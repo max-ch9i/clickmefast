@@ -24,6 +24,7 @@
     "live-server": "^0.8.2",
     "postcss": "^5.0.12",
     "queue": "^3.1.0",
+    "radium": "^0.15.3",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
     "react-tap-event-plugin": "^0.2.1"

@@ -1,28 +1,20 @@
 import React from 'react';
+import Radium from 'radium';
+import Styles from './Styles';
 
-export default class JoinControl extends React.Component {
-	_styles() {
-		return {
-			display: 'inline-block',
-			width: 100,
-			height: 100,
-			backgroundColor: 'magenta',
-			textAlign: 'center',
-			lineHeight: '100px',
-			color: 'white',
-			textDecoration: 'none'
-		};
-	}
+class JoinControl extends React.Component {
 	controlClick(e) {
 		e.preventDefault();
 		this.props.click.call();
 	}
 	render() {
 		return (<div>
-			<a style={this._styles()} href onClick={this.controlClick.bind(this)}>Join</a>
+			<a style={[Styles.buttons.base]} href onClick={this.controlClick.bind(this)}>Join</a>
 		</div>);
 	}
 }
 JoinControl.propTypes = {
     click: React.PropTypes.func.isRequired
 };
+
+export default Radium(JoinControl);
