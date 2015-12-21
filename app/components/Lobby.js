@@ -1,5 +1,6 @@
 import React from 'react';
 import JoinControl from './JoinControl';
+import QueueControl from './QueueControl';
 import {dispatch} from '../data/AppDispatcher';
 
 class Lobby extends React.Component<{}, Props, {}> {
@@ -18,8 +19,7 @@ class Lobby extends React.Component<{}, Props, {}> {
         });
     }
 
-    _queue(e) {
-        e.preventDefault();
+    _queue() {
         dispatch({
             type: 'queue/join'
         });
@@ -36,9 +36,9 @@ class Lobby extends React.Component<{}, Props, {}> {
     render() {
         switch (this.props.stage) {
             case 'init':
-                 return <JoinControl click={this._join}/>;
+                return <JoinControl click={this._join}/>;
             case 'idle':
-                return <div><a href onClick={this._queue.bind(this)}>Queue</a></div>;
+                return <QueueControl click={this._queue}/>;
             case 'queue':
                 return <div>Queuing</div>;
             case 'victory':
