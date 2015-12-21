@@ -3,8 +3,9 @@ import JoinControl from './JoinControl';
 import QueueControl from './QueueControl';
 import GameControl from './GameControl';
 import {dispatch} from '../data/AppDispatcher';
+import Radium from 'radium';
 
-class Lobby extends React.Component<{}, Props, {}> {
+class Lobby extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -42,9 +43,15 @@ class Lobby extends React.Component<{}, Props, {}> {
             case 'queue':
                 return <div>Queuing</div>;
             case 'victory':
-                return <div>You won!</div>;
+                return (<div style={styles.scores}>
+                    <h1>You won!</h1>
+                    <QueueControl click={this._queue}/>
+                </div>);
             case 'defeat':
-                return <div>You lost!</div>;
+                return (<div style={styles.scores}>
+                    <h1>You lost!</h1>
+                    <QueueControl click={this._queue}/>
+                </div>);
             case 'game':
                 return <GameControl hit={this._hit} myBoard={this.props.myBoard} opBoard={this.props.opBoard}/>;
         }
@@ -56,4 +63,12 @@ Lobby.defaultProps = {
     opBoard: []
 };
 
-export default Lobby;
+var styles = {
+    scores: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column'
+    }
+};
+
+export default Radium(Lobby);

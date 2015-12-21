@@ -3,8 +3,8 @@ import Board from './Board';
 export default class Game {
     constructor(player, opponent, initPlayers) {
         if (initPlayers) {
-            opponent.initForGame(player);
             player.initForGame();
+            opponent.initForGame(player);
         }
         this.player = player;
         this.opponent = opponent;
@@ -12,22 +12,25 @@ export default class Game {
             _snapshotBoardMy: null,
             _snapshotBoardOp: null
         };
+        this.refBoardPlayer = null;
+        this.refBoardOp = null;
     }
     initGame(onInit, onVictory, onBoardUpdate) {
         onInit.apply(this);
         this.onVictory = onVictory.bind(this);
         this.onBoardUpdate = onBoardUpdate.bind(this);
-        var refBoardPlayer = this.player.getRef().child('board');
-        var refBoardOp = this.opponent.getRef().child('board');
-        refBoardPlayer.on('value', this.updateBoard('current', this._boardSnapshots, '_snapshotBoardMy', refBoardPlayer));
-        refBoardOp.on('value', this.updateBoard('opponent', this._boardSnapshots, '_snapshotBoardOp', refBoardOp));
+        this.refBoardPlayer = this.player.getRef().child('board');
+        this.refBoardOp = this.opponent.getRef().child('board');
+        this.refBoardPlayer.on('value', this.updateBoard('current', '_snapshotBoardMy'));
+        this.refBoardOp.on('value', this.updateBoard('opponent', '_snapshotBoardOp'));
     }
-    updateBoard(side, snapshotCache, cacheEntry, refBoard) {
+    updateBoard(side, cacheEntry) {
         return function(snapshot) {
-            snapshotCache[cacheEntry] = snapshot;
+            this._boardSnapshots[cacheEntry] = snapshot;
             var data = snapshot.val();
             if (Board.haveIWon(data)) {
-                refBoard.off();
+                this.refBoardPlayer.off();
+                this.refBoardOp.off();
                 this.onVictory(side);
             } else {
                 this.onBoardUpdate(side, Board.parse(data));
