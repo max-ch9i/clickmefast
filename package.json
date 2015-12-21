@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build": "watchify -t [ babelify --presets [ es2015 react stage-0 ] ] app/main.js -o dist/build.js --fast",
-    "css": "postcss --use cssnano -o dist/styles.css postcss/styles.postcss --watch",
+    "css": "postcss --use cssnano -o dist/styles.css postcss/styles.pcss --watch",
     "live": "live-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
