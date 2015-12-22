@@ -62,10 +62,12 @@ var styles = {
 		position: 'absolute',
 		height: '50px',
 		width: '50px',
-		backgroundColor: 'blue'
+		backgroundColor: 'blue',
+		cursor: 'pointer'
 	},
 	pieceOp: {
-		backgroundColor: 'red'
+		backgroundColor: 'red',
+		cursor: 'auto'
 	}
 };
 
