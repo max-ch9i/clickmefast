@@ -3,6 +3,8 @@ A simple multi-player game, built with React, Flux and Firebase.
 The goal of the game is to eliminate the boxes faster than your opponent does by simply clicking on them.
 [Play it!](http://maximus8891.github.io)
 
+![Click Me Fast gameplay](https://raw.githubusercontent.com/maximus8891/clickmefast/master/docs/game.gif)
+
 ### Architecture
 Lobby dispatches Actions, which a captured by FireConnectorStore. FireConnectorStore communicates to Firebase and invokes callbacks, which dispatch Actions processed by PlayersStore. Finally, Lobby consumes the state of PlayersStore.
 ```
